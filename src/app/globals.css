@@ -1,26 +1,84 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-bengali), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+  --color-brand: #16a34a;
+  --color-brand-dark: #15803d;
+  --color-ink: #111827;
+  --color-page: #f7f8f7;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  /* স্টিকি নেভবারের নিচে হেডিং ঢাকা না পড়ার জন্য */
+  scroll-padding-top: 7rem;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-page);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* স্ক্রলবার লুকানো (ক্যাটাগরি লিংকের সারি) */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ---------- প্রাইস টিকার (মার্কি) ---------- */
+@keyframes bazardor-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: bazardor-marquee 42s linear infinite;
+}
+
+.marquee-viewport:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* ---------- লোডিং স্কেলিটন ---------- */
+@keyframes bazardor-shimmer {
+  0% {
+    background-position: -480px 0;
+  }
+  100% {
+    background-position: 480px 0;
+  }
+}
+
+.skeleton {
+  background-color: #e9ece9;
+  background-image: linear-gradient(
+    90deg,
+    #e9ece9 0px,
+    #f6f8f6 120px,
+    #e9ece9 240px
+  );
+  background-size: 480px 100%;
+  background-repeat: no-repeat;
+  animation: bazardor-shimmer 1.4s ease-in-out infinite;
 }
