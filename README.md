@@ -55,6 +55,7 @@
 ```text
 bazardor/
 ├── .env.example                 # প্রয়োজনীয় env ভেরিয়েবলের নমুনা
+├── .npmrc                       # Python/C++ টুলচেইন ছাড়াই npm install-এর কনফিগ
 ├── next.config.ts               # Next.js কনফিগ
 ├── package.json
 ├── README.md
@@ -118,6 +119,15 @@ npm run dev
 ```
 
 তারপর ব্রাউজারে **http://localhost:3000** খুলুন।
+
+> 💡 **প্রথমবার VS Code-এ ঢুকলে `layout.tsx`-এ `Cannot find name 'LayoutProps'`
+> লেখা একটি লাল দাগ দেখতে পারেন — এটি স্বাভাবিক।** Next.js চলার সময় নিজে থেকেই
+> টাইপ ফাইল তৈরি করে; তাই একবার `npm run dev` (বা `npm run build`) চালালেই দাগটি
+> চলে যায়। `tsc --noEmit`-ও বিল্ডের পরে সম্পূর্ণ ক্লিন।
+
+> 🐍 **Python লাগবে না।** প্রজেক্টের `.npmrc`-তে `ignore-scripts=true` দেওয়া আছে,
+> কারণ `better-sqlite3` কম্পাইল না করেই prebuilt বাইনারি ব্যবহার করে। তাই
+> Windows-এ C++ build tools বা Python ছাড়াও `npm install` সোজা কাজ করে।
 
 > 💡 **কোনো ডেটাবেজ সেটআপ লাগবে না।** `DATABASE_URL` না দিলে অ্যাপ নিজেই একটি
 > লোকাল SQLite ফাইল (`bazardor.sqlite`) বানিয়ে নেয় এবং BetterAuth-এর
