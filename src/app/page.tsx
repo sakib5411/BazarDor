@@ -1,69 +1,134 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import Link from "next/link";
+import Hero from "@/components/Hero";
+import ProductGrid from "@/components/ProductGrid";
+import {
+  ProductGridSkeleton,
+  SectionHeadingSkeleton,
+} from "@/components/Skeletons";
+import { useProducts } from "@/hooks/useProducts";
+import type { Product } from "@/lib/api";
+
+function SectionHeading({
+  icon,
+  title,
+  subtitle,
+}: {
+  icon: string;
+  title: string;
+  subtitle?: string;
+}) {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="mb-5">
+      <h2 className="flex items-center gap-2 text-lg font-extrabold text-gray-900 sm:text-xl">
+        <span aria-hidden>{icon}</span>
+        {title}
+      </h2>
+      {subtitle ? (
+        <p className="mt-1 text-sm text-gray-500">{subtitle}</p>
+      ) : null}
+    </div>
+  );
+}
+
+/** একই পণ্য দুইবার এলেও key আলাদা রাখার জন্য। */
+function topRisers(products: Product[], count = 6) {
+  return [...products]
+    .filter((p) => p.change.dir === "up")
+    .sort((a, b) => b.change.pct - a.change.pct)
+    .slice(0, count);
+}
+
+function topFallers(products: Product[], count = 6) {
+  return [...products]
+    .filter((p) => p.change.dir === "down")
+    .sort((a, b) => a.change.pct - b.change.pct)
+    .slice(0, count);
+}
+
+export default function HomePage() {
+  const { products, loading, error, reload } = useProducts();
+
+  const risers = topRisers(products);
+  const fallers = topFallers(products);
+
+  return (
+    <div className="space-y-10">
+      <Hero />
+
+      {error ? (
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-6 text-center">
+          <p className="text-sm font-semibold text-red-700">{error}</p>
+          <button
+            type="button"
+            onClick={reload}
+            className="mt-4 rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
+          >
+            আবার চেষ্টা করুন
+          </button>
+        </div>
+      ) : null}
+
+      {/* সেকশন A — আজ দাম বেড়েছে */}
+      <section>
+        <SectionHeading
+          icon="▲"
+          title="আজ দাম বেড়েছে"
+          subtitle="গতকালের তুলনায় যেসব পণ্যের দাম সবচেয়ে বেশি বেড়েছে।"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+        {loading ? (
+          <>
+            <SectionHeadingSkeleton />
+            <ProductGridSkeleton count={6} />
+          </>
+        ) : (
+          <ProductGrid products={risers} />
+        )}
+      </section>
+
+      {/* সেকশন B — আজ দাম কমেছে */}
+      <section>
+        <SectionHeading
+          icon="▼"
+          title="আজ দাম কমেছে"
+          subtitle="গতকালের তুলনায় যেসব পণ্যের দাম সবচেয়ে বেশি কমেছে।"
+        />
+        {loading ? (
+          <ProductGridSkeleton count={6} />
+        ) : (
+          <ProductGrid products={fallers} />
+        )}
+      </section>
+
+      {/* সেকশন C — সব পণ্য */}
+      <section id="সব-পণ্য" className="scroll-mt-28">
+        <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+          <SectionHeading
+            icon="🛍️"
+            title="সব পণ্য"
+            subtitle="চাল, ডাল, তেল, সবজি, মাছ, মাংস, ডিম-দুধ ও মসলার সম্পূর্ণ তালিকা।"
+          />
+          {!loading && products.length > 0 ? (
+            <p className="mb-5 text-sm text-gray-500">
+              মোট {products.length} টি পণ্য
+            </p>
+          ) : null}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+
+        {loading ? (
+          <ProductGridSkeleton count={12} />
+        ) : products.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-gray-300 bg-white p-8 text-center text-sm text-gray-500">
+            এখন কোনো পণ্যের তথ্য পাওয়া যাচ্ছে না।{" "}
+            <Link href="/" className="font-semibold text-green-700 underline">
+              আবার চেষ্টা করুন
+            </Link>
+          </div>
+        ) : (
+          <ProductGrid products={products} />
+        )}
+      </section>
     </div>
   );
 }
