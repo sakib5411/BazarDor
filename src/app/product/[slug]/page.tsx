@@ -15,7 +15,7 @@ export async function generateMetadata({
   };
 }
 
-/** সুরক্ষিত রুট — লগইন ছাড়া দেখা যাবে না। */
+
 export default async function ProductPage({ params }: PageProps) {
   const { slug } = await params;
   return <ProductDetailClient slug={slug} />;

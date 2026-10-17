@@ -22,7 +22,6 @@ export default function ProductDetailClient({ slug }: { slug: string }) {
 
   const signedIn = Boolean(session?.user);
 
-  /* সুরক্ষিত রুট — লগইন না থাকলে টোস্ট দেখিয়ে সাইন ইন পেজে পাঠানো হয় */
   useEffect(() => {
     if (isPending || signedIn) return;
     toast.error("এই পেজটি দেখতে অনুগ্রহ করে সাইন ইন করুন");
