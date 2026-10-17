@@ -12,8 +12,9 @@
  
 | বিষয় | লিংক |
 | --- | --- |
-| 🌐 Live Link  |
-| 💻 GitHub Repository |
+| 🌐 Live Link:bazar-dor-khaki-nine.vercel.app
+ |
+| 💻  GitHub Repository: https://github.com/sakib5411/BazarDor |
 
 ---
 
