@@ -37,7 +37,7 @@ export default function ProfilePage() {
         </div>
       </div>
     );
-  }
+  } 
 
   const user = session?.user;
 
@@ -63,7 +63,7 @@ export default function ProfilePage() {
             <span className="flex h-14 w-14 items-center justify-center rounded-full bg-green-600 text-xl font-bold text-white">
               {(user?.name ?? "অ").charAt(0)}
             </span>
-          )}
+          )} 
           <div className="min-w-0">
             <p className="truncate text-base font-bold text-gray-900">
               {user?.name ?? "নাম নেই"}
